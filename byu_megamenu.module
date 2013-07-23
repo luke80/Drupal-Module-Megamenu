@@ -62,7 +62,7 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
         '#description' => t('Upload an Image'),
 		'#states' => array(
 			'visible' => array(
-				':input[name="mega_enabled"]' => array('value' => '1'),
+				':input[name="mega_enabled"]' => array('checked' => TRUE),
 			),
 		),
 	);
@@ -89,6 +89,11 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
         '#title' => t('Alt Tag'),
         '#default_value' => $image_alt_default,
         '#description' => t('Include an alt tag for the image. Used for accessibility purposes.'),
+		'#states' => array(
+			'visible' => array(
+				':input[name="mega_enabled"]' => array('checked' => TRUE),
+			),
+		),
     );
 
     $form['megamenu']['featured_text'] = array(
@@ -99,6 +104,11 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
         '#cols' => 120,
         '#rows' => 10,
         '#description' => t('The text to be displayed underneath the image.'),
+		'#states' => array(
+			'visible' => array(
+				':input[name="mega_enabled"]' => array('checked' => TRUE),
+			),
+		),
     );
 	
     //This changes the description on the existing link line
