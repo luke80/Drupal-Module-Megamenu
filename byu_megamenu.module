@@ -349,7 +349,7 @@ function renderMenu($tree) {
             if ($featured_count == 1 && $is_parent_featured_link) {
               $html .= "<ul class=sublinks>"; //this will open children uls which causes the indent
             }
-            $html .= '<li class="featured"><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '">' . $lvl3['title'] . '</a></li>'; //this will print for all featured links
+            $html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '">' . $lvl3['title'] . '</a></li>'; //this will print for all featured links
             $was_a_featured = true; //if we are in this we are on a featured link
           }
         }
