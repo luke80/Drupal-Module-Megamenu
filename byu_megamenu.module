@@ -62,13 +62,9 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
         '#description' => t('Upload an Image'),
 		'#required' => TRUE,
 		'#states' => array(
-			'visible' => array(
-				':input[name="mega_enabled"]' => array('checked' => TRUE),
-			),
-			'required' => array(
-				':input[name="mega_enabled"]' => array('checked' => TRUE),
-			)
-		),
+			'visible'  => array(':input[name="mega_enabled"]' => array('checked' => TRUE)),
+			'optional' => array(':input[name="mega_enabled"]' => array('checked' => FALSE))
+		)
 	);
 
     //To Do: Create a field to select an image style that will match the template design. 200 x 133px
