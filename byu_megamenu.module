@@ -325,9 +325,18 @@ function renderMenu($tree) {
       }
 
       //start featured
+      $num_featured = 0;
+      foreach ($lvl1['below'] as $lvl2) {
+          if (isset($lvl2['featured_link']) && $lvl2['featured_link']) {
+              $num_featured++;
+          }
+      }
       $featured_count = 0;
       $was_a_featured = false;
+      // if there are no featured links, then the featured class isn't used
+      if($num_featured > 0){
 	  $html .= '<li class="featured"><ul>';
+      }
       foreach ($lvl1['below'] as $lvl2) {
         if (isset($lvl2['featured_link']) && $lvl2['featured_link']) {
           $lvl2_title = $lvl2['title'];
@@ -352,11 +361,11 @@ function renderMenu($tree) {
         if ($featured_count > 0 && $is_parent_featured_link) { //This will close children uls
           $html .= "</ul>";
         } 
-        //if (isset($lvl2['featured_link']) && $lvl2['featured_link']) $html .= "</ul>";//close lvl2 li
       }
+      if($num_featured > 0){
 	  $html .= '</ul></li>';
+      }
       if ($was_a_featured) {
-        //$html .= '<hr/>';
         $was_a_featured = false;
       } //end featured links
 
