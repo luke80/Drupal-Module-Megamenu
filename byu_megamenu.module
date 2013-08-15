@@ -355,14 +355,14 @@ function renderMenu($tree) {
 						$html .= '</ul></li>';
 						$count_in_columns = 0;
 					} 
-					$sublinks = (!empty($lvl2['below'])) ? TRUE ? FALSE ;
+					$sublinks = (!empty($lvl2['below'])) ? TRUE : FALSE ;
 
 					if ($sublinks) {
 						$html .= '<ul class="sublinks">';
 					}
 					foreach ($lvl2['below'] as $lvl3) {
 						$lvl3_title = $lvl3['title'];
-						$html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '">' . $lvl3['title'] . '</a></li>';
+						$html .= '<li><a href="'.$lvl3['path'].'" title="'.$lvl3['description'].'">'.$lvl3['title'].'</a></li>';
 						$count_in_columns++;
 					}
 					if ($sublinks) {
@@ -379,16 +379,16 @@ function renderMenu($tree) {
 			foreach ($lvl1['below'] as $lvl2) {
 				if (isset($lvl2['mega_menu']) && $lvl2['mega_menu']) {
 					$html .= '<div class="highlight">';
-					$html .= '<a href="' . $lvl2['path'] . '"><img src="' . file_create_url(file_load($lvl2['image_path'])->uri) . '" alt="' . $lvl2['image_alt'] . '" /></a><br/>';
-					$html .= '<a href="' . $lvl2['path'] . '">' . $lvl2['title'] . '</a>';
-					$html .= '<p>' . $lvl2['featured_text'] . '</p></div>';
+					$html .= '<a href="'.$lvl2['path'].'"><img src="'.file_create_url(file_load($lvl2['image_path'])->uri).'" alt="'.$lvl2['image_alt'].'" /></a><br/>';
+					$html .= '<a href="'.$lvl2['path'].'">'.$lvl2['title'].'</a>';
+					$html .= '<p>'.$lvl2['featured_text'].'</p></div>';
 				}
 				foreach ($lvl2['below'] as $lvl3) {
 					if (isset($lvl3['mega_menu']) && $lvl3['mega_menu']) {
 						$html .= '<div class="highlight">';
-						$html .= '<a href="' . $lvl3['path'] . '"><img src="' . file_create_url(file_load($lvl3['image_path'])->uri) . '" alt="' . $lvl3['image_alt'] . '" /></a><br/>';
-						$html .= '<a href="' . $lvl3['path'] . '">' . $lvl3['title'] . '</a>';
-						$html .= '<p>' . $lvl3['featured_text'] . '</p></div>';
+						$html .= '<a href="'.$lvl3['path'].'"><img src="'.file_create_url(file_load($lvl3['image_path'])->uri).'" alt="'.$lvl3['image_alt'].'" /></a><br/>';
+						$html .= '<a href="'.$lvl3['path'].'">'.$lvl3['title'] . '</a>';
+						$html .= '<p>'.$lvl3['featured_text'].'</p></div>';
 					}
 				}
 			}
