@@ -223,11 +223,13 @@ function getMenuArray($self) {
  */
 function renderMenu($tree) {
 	$html = '<ul>';
+	// Level 1 links are the top level links
 	foreach ($tree as $lvl1) {
 		if ($lvl1['below'] == null) {
-			$html .= '<li><a class="single" href="' . $lvl1['path'] . '">' . $lvl1['title'] . '</a>'; /*Checks to see if there are children links. If not, then a class=single*/																					
+			//Checks to see if there are children links. If not, then a class='single'
+			$html .= '<li><a class="single" href="'.$lvl1['path'].'">'. $lvl1['title'] .'</a>'; 																					
 		} else {	
-			$html .= '<li><a href="' . $lvl1['path'] . '">' . $lvl1['title'] . '</a>';
+			$html .= '<li><a href="'.$lvl1['path'].'">'. $lvl1['title'] .'</a>';
       
 			/* Section to calculate max number of links per columns */
 			$MEGA_DIV_HEIGHT = 340;
@@ -277,12 +279,12 @@ function renderMenu($tree) {
 
 			if ($is_mega) {
 				$html .= '<div class="mega">';
-				$html .= '<ul class="' . $links_class . '">';
+				$html .= '<ul class="'. $links_class .'">';
 			} elseif (empty($lvl1['below'])) {
 				continue;
 			} else {
 				$html .= '<div class="sub">';
-				$html .= '<ul class="' . $links_class . '">';
+				$html .= '<ul class="'.$links_class.'">';
 			}
 
 			//-- Featured Links --
@@ -303,11 +305,12 @@ function renderMenu($tree) {
 			foreach ($lvl1['below'] as $lvl2) {
 				if (isset($lvl2['featured_link']) && $lvl2['featured_link']) {
 					$lvl2_title = $lvl2['title'];
-					$html .= '<li><a href="' . $lvl2['path'] . '" title="' . $lvl2['description'] . '">' . $lvl2['title'] . '</a></li>';
+					$html .= '<li><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'">'.$lvl2['title'].'</a></li>';
 					$was_a_featured = true;
 					$featured_count = 0;
 				}
-				// check to see if parent is not featured and remove the indent where true
+				
+				// Check to see if parent is not featured and remove the indent where true
 				$is_parent_featured_link = $lvl2['featured_link'];
 				$child_count = 0;
 				foreach ($lvl2['below'] as $lvl3) {
@@ -352,10 +355,7 @@ function renderMenu($tree) {
 						$html .= '</ul></li>';
 						$count_in_columns = 0;
 					} 
-					if (!empty($lvl2['below'])) {
-						$sublinks = TRUE;
-					} else
-						$sublinks = FALSE;
+					$sublinks = (!empty($lvl2['below'])) ? TRUE ? FALSE ;
 
 					if ($sublinks) {
 						$html .= '<ul class="sublinks">';
