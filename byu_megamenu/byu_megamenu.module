@@ -6,12 +6,12 @@
  * @file
  * Provides additional menu attributes to accomodate megamenus.
  */
-function byu_megamenu_init() {
-  $main_menu_data = getMenuArray(menu_tree_all_data(variable_get('menu_main_links_source', 'main-menu'))); //this is done so no notice appears if no menu items exist
-  if (count($main_menu_data)>0) {
-    $html = renderMenu($main_menu_data);
+function byu_megamenu_init() { //this doesn't have to happen, it was just to automatically include the megamenu if the theme and module were enabled
+ // $main_menu_data = getMenuArray(menu_tree_all_data(variable_get('menu_main_links_source', 'main-menu'))); //this is done so no notice appears if no menu items exist
+ // if (count($main_menu_data)>0) {
+ //   $html = renderMenu($main_menu_data);
 //    drupal_add_js('jQuery(document).ready(function () {jQuery("#primary-nav").html(\'' . $html . '\'); });', 'inline');
-  }
+ // }
 }
 
 /**
@@ -188,8 +188,11 @@ function getMenuArray($self) {
 		$hidden = $each['link']['hidden'];
     if (isset($each['link']['options']['attributes']['title'])) {
 		$description = $each['link']['options']['attributes']['title'];
-    } else
-      $description = "";
+    } else $description = "";
+    if (empty($each['link']['options']['attributes']['title'])) {
+        $each['link']['options']['attributes']['title'] = $each['link']['link_title'];
+    }
+    $attributes = $each['link']['options']['attributes'];
     $plid = $each['link']['plid'];
 
     $result = _byu_megamenu_get_menu_data($mlid); //this gets our byu_megamenu row data for this parti and puts it into &result
@@ -208,6 +211,7 @@ function getMenuArray($self) {
           'featured_text' => htmlspecialchars($result['featured_text'], ENT_QUOTES),
           'mega_menu' => $result['mega_enabled'],
           'description' => $description,
+          'attributes' => $attributes,
       );
     }
     $new[$mlid]['below'] = getMenuArray($each['below']);
@@ -222,14 +226,17 @@ function getMenuArray($self) {
  * @return string
  */
 function renderMenu($tree) {
-	$html = '<ul>';
+  	$html = '<ul>';
 	// Level 1 links are the top level links
 	foreach ($tree as $lvl1) {
-		if ($lvl1['below'] == null) {
+		$attributes ="";
+        if ($lvl1['below'] == null) {
 			//Checks to see if there are children links. If not, then a class='single'
-			$html .= '<li><a class="single" href="'.$lvl1['path'].'">'. $lvl1['title'] .'</a>'; 																					
-		} else {	
-			$html .= '<li><a href="'.$lvl1['path'].'">'. $lvl1['title'] .'</a>';
+            $lvl1['attributes']['class'][] = 'single';
+            $attributes = getAttributes($lvl1['attributes']);
+            $html .= '<li aria-haspopup="true"><a  href="' . $lvl1['path'] . '" ' . $attributes . '>' . $lvl1['title'] . '</a>';
+		} else {
+            $html .= '<li><a  href="' . $lvl1['path'] . '" ' . $attributes . '>' . $lvl1['title'] . '</a>';
       
 			/* Section to calculate max number of links per columns */
 			$MEGA_DIV_HEIGHT = 340;
@@ -303,9 +310,10 @@ function renderMenu($tree) {
 			}
 			
 			foreach ($lvl1['below'] as $lvl2) {
+                $attributes = "";
 				if (isset($lvl2['featured_link']) && $lvl2['featured_link']) {
-					$lvl2_title = $lvl2['title'];
-					$html .= '<li><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'">'.$lvl2['title'].'</a></li>';
+                    $attributes = getAttributes($lvl2['attributes']);
+					$html .= '<li><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'"' .$attributes .'>'.$lvl2['title'].'</a></li>';
 					$was_a_featured = true;
 					$featured_count = 0;
 				}
@@ -314,13 +322,14 @@ function renderMenu($tree) {
 				$is_parent_featured_link = $lvl2['featured_link'];
 				$child_count = 0;
 				foreach ($lvl2['below'] as $lvl3) {
+                    $attributes = "";
 					if (isset($lvl3['featured_link']) && $lvl3['featured_link']) {
-						$lvl3_title = $lvl3['title'];
 						$featured_count++;
 						if ($featured_count == 1 && $is_parent_featured_link) {
 							$html .= "<ul class=sublinks>"; //this will open children uls which causes the indent
 						}
-						$html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '">' . $lvl3['title'] . '</a></li>'; //this will print for all featured links
+                      $attributes = getAttributes($lvl3['attributes']);
+					  $html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '"' .$attributes .'>' . $lvl3['title'] . '</a></li>'; //this will print for all featured links
 						$was_a_featured = true; //if we are in this we are on a featured link
 					}
 				}
@@ -342,12 +351,13 @@ function renderMenu($tree) {
 			$count_in_columns = 0; //this is to keep track of the number of links in a column
 			$html .= '<li class="left"><ul>';
 			foreach ($lvl1['below'] as $lvl2) {
+                $attributes = "";
 				if ($count_in_columns >= $max_links_per_side && $is_mega) {
 					$html .= '</ul></li><li class="left"><ul>';
 					$count_in_columns = 0;
 				}
-				$lvl2_title = $lvl2['title'];
-				$html .= '<li><a href="' . $lvl2['path'] . '" title="' . $lvl2['description'] . '">' . $lvl2['title'] . '</a>';
+                $attributes = getAttributes($lvl2['attributes']);
+                $html .= '<li><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'"' .$attributes .'>'.$lvl2['title'].'</a></li>';
 				$count_in_columns++;
 				if (isset($lvl2['below']) && $lvl2['below']) {
 					if ($count_in_columns >= $max_links_per_side && $is_mega) {
@@ -361,8 +371,9 @@ function renderMenu($tree) {
 						$html .= '<ul class="sublinks">';
 					}
 					foreach ($lvl2['below'] as $lvl3) {
-						$lvl3_title = $lvl3['title'];
-						$html .= '<li><a href="'.$lvl3['path'].'" title="'.$lvl3['description'].'">'.$lvl3['title'].'</a></li>';
+                        $attributes = "";
+                      $attributes = getAttributes($lvl3['attributes']);
+                      $html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '"' .$attributes .'>' . $lvl3['title'] . '</a></li>';
 						$count_in_columns++;
 					}
 					if ($sublinks) {
@@ -399,7 +410,21 @@ function renderMenu($tree) {
 	$html .= "</ul>"; //closes menu ul
 	return $html;
 }
-
+/***
+ * @param array $attributes
+ * @return string
+ * This is to get the attributes out of the menu items
+ */
+function getAttributes(array $attributes) {
+  $options = "";
+  foreach ($attributes as $key => $value) {
+    if (is_array($value)) {
+      $value = implode(" ", $value);
+    }
+    $options .= $key . '=' . '"' . $value . '" ';
+  }
+return $options;
+}
 /**
  * Returns the rendered HTML menu
  * @return the rendered HTML menu
