@@ -7,11 +7,11 @@
  * Provides additional menu attributes to accomodate megamenus.
  */
 function byu_megamenu_init() { //this doesn't have to happen, it was just to automatically include the megamenu if the theme and module were enabled
- // $main_menu_data = getMenuArray(menu_tree_all_data(variable_get('menu_main_links_source', 'main-menu'))); //this is done so no notice appears if no menu items exist
- // if (count($main_menu_data)>0) {
- //   $html = renderMenu($main_menu_data);
+  $main_menu_data = getMenuArray(menu_tree_all_data(variable_get('menu_main_links_source', 'main-menu'))); //this is done so no notice appears if no menu items exist
+  if (count($main_menu_data)>0) {
+    $html = renderMenu($main_menu_data);
 //    drupal_add_js('jQuery(document).ready(function () {jQuery("#primary-nav").html(\'' . $html . '\'); });', 'inline');
- // }
+  }
 }
 
 /**
