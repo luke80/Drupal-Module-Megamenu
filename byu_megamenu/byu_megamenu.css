@@ -548,7 +548,7 @@ body.sideNav #main-header, body.sideNav #search-menu, body.sideNav #content, bod
     border-top: 1px solid #ddd;
   }
   /* line 484, ../sass/byu_megamenu.scss */
-  #primary-nav .mega li.featured {
+  #primary-nav li.featured {
     margin-bottom: 1em;
     padding-top: .5em;
     padding-bottom: 1em;
