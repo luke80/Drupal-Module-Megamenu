@@ -26,6 +26,7 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
 		$image_alt_default = $defaults_array['image_alt'];
 		$featured_text_default = $defaults_array['featured_text'];
 		$featured_link_default = $defaults_array['featured_link'];
+		$featured_only_default = $defaults_array['featured_only'];
 
 		$form['megamenu'] = array(
 			'#type' => 'fieldset',
@@ -90,6 +91,15 @@ function byu_megamenu_form_alter(&$form, $form_state, $form_id) {
 				'required' => array(':input[name="mega_enabled"]' => array('checked' => TRUE))
 			)
 		);
+		
+		$form['megamenu']['featured_only'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Link once'),
+			'#description' => t('Check this to suppress menu item duplication.'),
+			'#return_value' => 1,
+			'#default_value' => $featured_only_default
+		);
+		
 
 		//This changes the description on the existing link line
 		$form['link_path']['#description'] = "The path for this menu link. This can be an internal Drupal path such as node/add or an external URL such as http://drupal.org. Enter <front> to link to the front page. Use http://# for a empty link.";
@@ -136,6 +146,7 @@ function byu_megamenu_form_submit(&$form, $form_state) {
 		$image_alt = $megamenu['image_alt'];
 		$featured_text = $megamenu['featured_text'];
 		$featured_link = $megamenu['featured_link'];
+		$featured_only = $megamenu['featured_only'];
 
 		db_merge('byu_megamenu')
             ->key(array('mlid' => $mlid))
@@ -145,6 +156,7 @@ function byu_megamenu_form_submit(&$form, $form_state) {
                 'image_alt' => $image_alt,
                 'featured_text' => $featured_text,
                 'featured_link' => $featured_link,
+                'featured_only' => $featured_only,
             ))
             ->execute();
 	}
@@ -209,6 +221,7 @@ function getMenuArray($self) {
           'image_path' => $result['image_path'],
           'image_alt' => $result['image_alt'],
           'featured_text' => htmlspecialchars($result['featured_text'], ENT_QUOTES),
+          'featured_only' => $result['featured_only'],
           'mega_menu' => $result['mega_enabled'],
           'description' => $description,
           'attributes' => $attributes,
@@ -357,7 +370,7 @@ function renderMenu($tree) {
 					$count_in_columns = 0;
 				}
                 $attributes = getAttributes($lvl2['attributes']);
-                $html .= '<li><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'"' .$attributes .'>'.$lvl2['title'].'</a></li>';
+                $html .= '<li'.(($lvl2['featured_only']>0 && ($lvl2['featured_link']>0||$lvl2['image_path']!=""))?' class="duplicate-feature"':'').'><a href="'.$lvl2['path'].'" title="'.$lvl2['description'].'"' .$attributes .'>'.$lvl2['title'].'</a></li>';
 				$count_in_columns++;
 				if (isset($lvl2['below']) && $lvl2['below']) {
 					if ($count_in_columns >= $max_links_per_side && $is_mega) {
@@ -373,7 +386,7 @@ function renderMenu($tree) {
 					foreach ($lvl2['below'] as $lvl3) {
                         $attributes = "";
                       $attributes = getAttributes($lvl3['attributes']);
-                      $html .= '<li><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '"' .$attributes .'>' . $lvl3['title'] . '</a></li>';
+                      $html .= '<li'.(($lvl3['featured_only']>0 && ($lvl3['featured_link']>0||$lvl3['image_path']!=""))?' class="duplicate-feature"':'').'><a href="' . $lvl3['path'] . '" title="' . $lvl3['description'] . '"' .$attributes .'>' . $lvl3['title'] . '</a></li>';
 						$count_in_columns++;
 					}
 					if ($sublinks) {

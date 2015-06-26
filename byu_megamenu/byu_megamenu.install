@@ -63,6 +63,13 @@ function byu_megamenu_schema() {
         'not null' => TRUE,
         'unsigned' => TRUE,
       ),
+   	  'featured_only' => array(
+        'description' => 'To mark link item as featured only',
+        'type' => 'int',
+        'default' => 0,
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
 
     ),
     'unique_keys' => array(
